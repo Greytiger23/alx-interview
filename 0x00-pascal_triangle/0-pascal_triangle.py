@@ -3,19 +3,13 @@
 
 
 def pascal_triangle(n):
+    """ returns a list of lists of integers """
     if n <= 0:
         return []
 
-    triangle = [[1]]
-
-    for a in range(1, n):
-        prev_row = triangle[a - 1]
-        new_row = [1]
-
+    triangle = [[1 for _ in range(a + 1)] for a in range(n)]
+    for a in range(2, n):
         for b in range(1, a):
-            new_row.append(prev_row[b - 1] + prev_row[b])
-
-        new_row.append(1)
-        triangle.append(new_row)
+            triangle[a][b] = triangle[a - 1][b - 1] + triangle[a - 1][b]
 
     return triangle
