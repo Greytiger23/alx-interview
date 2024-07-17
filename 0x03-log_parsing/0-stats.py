@@ -12,7 +12,7 @@ for i, line in enumerate(sys.stdin):
     if match:
         ip, date, status_code, file_size = match.groups()
         status_code = int(status_code)
-        total_size= int(file_size)
+        total_size += int(file_size)
         if status_code in status_codes:
             status_codes[status_code] += 1
         else:
