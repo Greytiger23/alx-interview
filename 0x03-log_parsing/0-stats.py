@@ -27,28 +27,22 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
+pattern = re.compile(r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[(.*?)\] \"GET /projects/260 HTTP/1.1\" (\d{3}) (\d+)$")
 # read lines from stdin
 for line in sys.stdin:
-    parts = line.split()
-    if len(parts) < 9:
-        continue
-    try:
-        ip_address = parts[0]
-        date = parts[3][1:] + ' ' + parts[4][:-1]
-        method = parts[5][1:]
-        url = parts[6]
-        protocol = parts[7][:-1]
-        status_code = int(parts[8])
-        file_size = int(parts[9])
-
-        if method != "GET" or url != "/projects/260" or protocol != "HTTP/1.1":
+    match = pattern.match(line)
+    if match:
+        ip, date, status_code, file_size = match.groups()
+        try:
+            status_code = int(status_code)
+            file_size = int(file_size)
+            if status_code in valid_status_codes:
+                total_size += file_size
+                status_codes[status_code] += 1
+            line_count += 1
+            if line_count % 10 == 0:
+                print_stats()
+        except ValueError:
             continue
-        total_size += file_size
-        if status_code in valid_status_codes:
-            status_codes[status_code] += 1
-        line_count += 1
-        if line_count % 10 == 0:
-            print_stats()
-    except (IndexError, ValueError):
-        continue
+
 print_stats()
