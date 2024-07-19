@@ -7,6 +7,8 @@ import signal
 
 total_size = 0
 status_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
+valid_status_code = set(status_codes.keys())
+line_count = 0
 
 
 def print_stats():
@@ -35,12 +37,11 @@ for line in sys.stdin:
         try:
             status_code = int(status_code)
             file_size = int(file_size)
-            total_size += file_size
-            status_codes[status_code] += 1
-            if int(status_code) in [200, 301, 400, 401, 403, 404, 405, 500]:
-                if int(status_code) in status_codes:
-                    status_codes[int(status_code)] += 1
-            if int(line.count('\n')) % 10 == 0:
+            if status_code in valid_status_codes:
+                total_size += file_size
+                status_codes[status_code] += 1
+            line_count += 1
+            if line_count % 10 == 0:
                 print_stats()
         except ValueError:
             continue
