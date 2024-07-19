@@ -47,7 +47,6 @@ try:
             except ValueError:
                 continue
 except KeyboardInterrupt:
-    print_stats()
-    sys.exit(0)
+    signal_handler()
 
 print_stats()
