@@ -30,20 +30,24 @@ signal.signal(signal.SIGINT, signal_handler)
 pattern = re.compile(r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[(.*?)\] \"GET /projects/260 HTTP/1.1\" (\d{3}) (\d+)$")
 
 # read lines from stdin
-for line in sys.stdin:
-    match = pattern.match(line)
-    if match:
-        ip, date, status_code, file_size = match.groups()
-        try:
-            status_code = int(status_code)
-            file_size = int(file_size)
-            if status_code in valid_status_codes:
-                total_size += file_size
-                status_codes[status_code] += 1
-            line_count += 1
-            if line_count % 10 == 0:
-                print_stats()
-        except ValueError:
-            continue
+try:
+    for line in sys.stdin:
+        match = pattern.match(line)
+        if match:
+            ip, date, status_code, file_size = match.groups()
+            try:
+                status_code = int(status_code)
+                file_size = int(file_size)
+                if status_code in valid_status_codes:
+                    total_size += file_size
+                    status_codes[status_code] += 1
+                line_count += 1
+                if line_count % 10 == 0:
+                    print_stats()
+            except ValueError:
+                continue
+except KeyboardInterrupt:
+    print_stats()
+    sys.exit(0)
 
 print_stats()
