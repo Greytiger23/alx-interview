@@ -28,6 +28,7 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 pattern = re.compile(r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[(.*?)\] \"GET /projects/260 HTTP/1.1\" (\d{3}) (\d+)$")
+
 # read lines from stdin
 for line in sys.stdin:
     match = pattern.match(line)
