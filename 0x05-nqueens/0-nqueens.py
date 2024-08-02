@@ -20,36 +20,39 @@ def print_small_number_and_exit():
     sys.exit(1)
 
 
-def solve_nqueens(n):
-    """Function that solves the n queens problem"""
-    def is_not_under_attack(board, row, col):
-        """Check if placing a queen at (row, col) is safe"""
-        for prev_row in range(row):
-            # Check colum and diagnols for conflicts
-            if (board[prev_row] == col or
-                    board[prev_row] - prev_row == col - row or
-                    board[prev_row] + prev_row == col + row):
-                return False
-            return True
+def is_not_under_attack(board, row, col):
+    """Check if placing a queen at (row, col) is safe"""
+    for i in range(row):
+        # Check colum and diagnols for conflicts
+        if (board[i] == col or
+                board[i] - i == col - row or
+                board[i] + i == col + row):
+            return False
+    return True
 
-    def solve(row):
-        """Recursive function to place queens on the board"""
-        if row == n:
-            # if all queens are placed, add the solution
-            solutions.append([[a, board[a]] for a in range(n)])
-            return
-        for col in range(n):
-            if is_not_under_attack(board, row, col):
-                # Place queen
-                board[row] = col
-                # Move to next row
-                solve(row + 1)
-    solutions = []
-    # Initialize the board
-    board = [-1] * n
-    # Start solving from the first row
-    solve(0)
-    return solutions
+
+def solve_nqueens(n, row, board, result):
+    """Function that solves the n queen problem"""
+    if row == n:
+        # if all queens are placed, add the solution
+        result.append(board[:])
+        return
+    for col in range(n):
+        if is_not_under_attack(board, row, col):
+            # Place queen
+            board[row] = col
+            # Move to next row
+            solve_nqueens(n, row + 1, board, result)
+
+
+def print_board(board):
+    """Function that prints the board"""
+    print("[", end="")
+    for i, col in enumerate(board):
+        if i > 0:
+            print(", ", end="")
+        print(f"[{i}, {col}]", end="")
+    print("]")
 
 
 def main():
@@ -62,9 +65,10 @@ def main():
         print_invalid_number_and_exit()
     if n < 4:
         print_small_number_and_exit()
-    solutions = solve_nqueens(n)
-    for solution in solutions:
-        print(solution)
+    result = []
+    solve_nqueens(n, 0, [-1] * n, result)
+    for board in result:
+        print_board(board)
 
 
 if __name__ == "__main__":
