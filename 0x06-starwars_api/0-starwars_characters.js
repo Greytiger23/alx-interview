@@ -15,8 +15,10 @@ request(apiUrl, (error, response, body) => {
   const filmData = JSON.parse(body);
   const characters = filmData.characters;
 
-  characters.forEach((characterUrl) => {
-    request(characterUrl, (error, response, body) => {
+  const printCharacterName = (index) => {
+    if (index >= characters.length) return;
+
+    request(characters[index], (error, response, body) => {
       if (error) {
         console.error(error);
         return;
@@ -24,6 +26,8 @@ request(apiUrl, (error, response, body) => {
 
       const characterData = JSON.parse(body);
       console.log(characterData.name);
+      printCharacterName(index + 1);
     });
-  });
+  };
+  printCharacterName(0);
 });
