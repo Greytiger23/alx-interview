@@ -5,14 +5,15 @@
 
 def makeChange(coins, total):
     """ Function to determine the total number of coins needed """
-    if total <= 0:
-        return 0
+    min_coins = [float('inf')] * (total + 1)
+    min_coins[0] = 0
 
-    dp = [float('inf')] * (total + 1)
-    dp[0] = 0
+    for x in range(1, total + 1):
+        for coin in coins:
+            if coin <= x:
+                min_coins[x] = min(min_coins[x], min_coins[x - coin] + 1)
 
-    for coin in coins:
-        for x in range(coin, total + 1):
-            dp[x] = min(dp[x], dp[x - coin] + 1)
-
-    return dp[total] if dp[total] != float('inf') else -1
+    if min_coins[total] == float('inf'):
+        return -1
+    else:
+        return min_coins[total]
